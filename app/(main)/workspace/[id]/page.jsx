@@ -11,15 +11,12 @@ const Workspace = () => {
 
   return (
     <div className='p-10'>
-      <SidebarProvider defaultOpen={false}>
-        <AppSidebar />
         <div className='grid grid-cols-1 md:grid-cols-3 gap-7'>
           <ChatView />
           <div className='col-span-2'>
             <CodeView />
           </div>
         </div>
-      </SidebarProvider>
     </div>
   )
 }

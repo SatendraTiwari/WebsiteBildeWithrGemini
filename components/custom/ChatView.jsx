@@ -8,7 +8,7 @@ import Lookup from '@/data/Lookup';
 import Prompt from '@/data/Prompt';
 import axios from 'axios';
 import { useConvex, useMutation } from 'convex/react';
-import { ArrowRight, Link, Loader2Icon, Sidebar } from 'lucide-react';
+import { ArrowRight, Link, Loader2Icon, Sidebar, SidebarOpen } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
 import React, { useContext, useEffect, useState } from 'react'
@@ -49,7 +49,6 @@ const ChatView = () => {
       });
 
       setMessages(result?.messages)
-      console.log('Workspace data:', result);
     } catch (error) {
       console.error('Failed to fetch workspace:', error);
     }
@@ -112,7 +111,7 @@ const ChatView = () => {
           onClick={toggleSidebar}
           
           >
-          <Sidebar/>
+          <SidebarOpen/>
         </div>}
       <div className='flex-1 overflow-y-scroll '>
         {Array.isArray(messages) && messages.map((msg, index) => (

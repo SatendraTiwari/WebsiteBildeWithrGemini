@@ -39,3 +39,14 @@ export const GetUser = query({
         return user[0];
     }
 })
+
+export const LogoutUser = mutation({
+    args: {
+        userId: v.optional(v.id("users")),
+        workspaceId: v.optional(v.id("workspace"))
+    },
+    handler: async(ctx, args) => {
+        // Server-side cleanup if needed
+        return { success: true }
+    }
+})

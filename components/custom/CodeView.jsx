@@ -14,7 +14,8 @@ import Prompt from '@/data/Prompt';
 import { useConvex, useMutation } from 'convex/react';
 import { useParams } from 'next/navigation';
 import { api } from '@/convex/_generated/api';
-import { Loader2Icon } from 'lucide-react';
+import SandpackPreviewClient from './SandpackPreviewClient';
+import Loader from './Loader';
 
 const CodeView = () => {
   const {id} = useParams();
@@ -60,8 +61,6 @@ const CodeView = () => {
     const result = await axios.post(`/api/gen-ai-code`, {
       prompt: PROMPT,
     })
-
-    console.log(result.data);
     const aiResp = result.data;
     const mergeFiles = {...Lookup.DEFAULT_FILE,...aiResp?.files};
 
@@ -107,13 +106,13 @@ const CodeView = () => {
           <SandpackCodeEditor style={{height : '84vh'}} />
           </>
           ) : (
-          <SandpackPreview  style={{height : '84vh'}}/>)}
+            <SandpackPreviewClient />
+          )}
         </SandpackLayout>
       </SandpackProvider>
 
       {loading && <div className='p-10 bg-gray-900 opacity-80 absolute top-0 rounded-lg w-full h-full flex items-center justify-center'>
-        <Loader2Icon className=' animate-spin h-10 w-10 text-white' />
-        <h2 className=' text-white'>Generatig your files...</h2>
+        <Loader />
       </div>}
     </div>
   )

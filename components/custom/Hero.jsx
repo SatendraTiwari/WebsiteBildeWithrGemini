@@ -2,7 +2,7 @@
 import { MessagesContext } from '@/context/MessagesContext'
 import { UserDetailContext } from '@/context/UserDetailContext'
 import Lookup from '@/data/Lookup'
-import { ArrowRight, Link } from 'lucide-react'
+import { ArrowRight, Link, Loader2Icon } from 'lucide-react'
 import React, { useContext, useState } from 'react'
 import SigninDialog from './SigninDialog'
 import { useMutation } from 'convex/react'
@@ -12,20 +12,22 @@ import { GlowingEffect } from '../ui/glowing-effect'
 import { AnimatedTooltip } from '../ui/animated-tooltip'
 import { people } from '@/data/DeveloperData'
 import { Spotlight } from '../ui/spotlight-new'
+import Loader from './Loader'
 
 const Hero = () => {
   const [userInput, setUserInput] = useState("")
   const { messages, setMessages } = useContext(MessagesContext);
-  const { userDetail, setUserDetail } = useContext(UserDetailContext);
-  const [openDialog, setOpenDialog] = useState(false);
+  const { userDetail, setUserDetail,openDialog, setOpenDialog } = useContext(UserDetailContext);
   const CreateWorkspace = useMutation(api.workspace.CreateWorkspace);
-
-  const router = useRouter()
+  const [loading,setLoading]  = useState(false)
+  const router = useRouter();
 
   const onGenerate = async (input) => {
+    setLoading(true);
     if (!userDetail?.name) {
       setOpenDialog(true);
     }
+    
     const msg = {
       role: "user",
       content: input
@@ -38,11 +40,11 @@ const Hero = () => {
         user: userDetail?._id
       });
 
-      console.log("Workspace created:", workspaceId);
-
-      if (!workspaceId) {
-        throw new Error('Failed to create workspace');
+      if(!workspaceId){
+        router.push(`/`);
       }
+
+      setLoading(false);
 
       router.push(`/workspace/${workspaceId}`);
     } catch (error) {
@@ -53,7 +55,6 @@ const Hero = () => {
 
 
   const onKeyHandler = (e) => {
-    console.log(e);
     if(e.key === "Enter" && userInput){
       onGenerate(userInput);
     }
@@ -102,6 +103,11 @@ const Hero = () => {
         </div>
 
         <SigninDialog openDialog={openDialog} closeDialog={(v) => setOpenDialog(v)} />
+
+        {loading && <div className='p-10 bg-gray-900 opacity-80 absolute top-0 rounded-lg w-full h-full flex items-center justify-center'>
+        <Loader />
+        <h2 className=' text-white'>Generatig your files...</h2>
+      </div>}
       </div>
     </>
   )

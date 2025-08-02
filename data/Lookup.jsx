@@ -1,7 +1,7 @@
 import dedent from "dedent";
 
 export default {
-  SUGGSTIONS: ['Create ToDo App in React', 'Create Budget Track App', 'Create Gym Managment Portal Dashboard', 'Create Quizz App On History', 'Create Login Signup Screen'],
+  SUGGSTIONS: ['Create ToDo App in React', 'Create Budget Track App', 'Create Gym Managment Portal Dashboard', 'Create Quizz App On History', 'Create Login Signup Screen',"Create a Dashboard for Ecommerce Web Application"],
   HERO_HEADING: 'What do you want to build?',
   HERO_DESC: 'Prompt, run, edit, and deploy full-stack web apps.',
   INPUT_PLACEHOLDER: 'What you want to build?',
@@ -73,37 +73,5 @@ export default config;
     "chart.js": "^4.4.7",
     "react-redux": "^8.1.0"
   },
-  PRICING_DESC:'Start with a free account to speed up your workflow on public projects or boost your entire team with instantly-opening production environments.',
-  PRICING_OPTIONS:[
-    {
-      name:'Basic',
-      tokens:'50K',
-      value:50000,
-      desc:'Ideal for hobbyists and casual users for light, exploratory use.',
-      price:4.99
-    },
-    {
-      name:'Starter',
-      tokens:'120K',
-      value:120000,
-      desc:'Designed for professionals who need to use Bolt a few times per week.',
-      price:9.99
-    },
-    {
-      name:'Pro',
-      tokens:'2.5M',
-      value:2500000,
-      desc:'Designed for professionals who need to use Bolt a few times per week.',
-      price:19.99
-    },
-    {
-      name:'Unlimted (License)',
-      tokens:'Unmited',
-      value:999999999,
-      desc:'Designed for professionals who need to use Bolt a few times per week.',
-      price:49.99
-    }
-  ]
-
 
 }

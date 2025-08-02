@@ -13,7 +13,10 @@ import AppSidebar from '@/components/custom/AppSidebar'
 
 const provider = ({ children }) => {
   const [messages, setMessages] = useState();
+
   const [userDetail, setUserDetail] = useState();
+
+  const [openDialog, setOpenDialog] = useState(false);
 
   const convex = useConvex()
 
@@ -45,10 +48,26 @@ const provider = ({ children }) => {
     }
   }
 
+  const handleLogout = async () => {
+    try {
+      await convex.mutation(api.users.LogoutUser, {
+        userId: userDetail?._id,
+      });
+      localStorage.removeItem("userDetail");
+      setUserDetail(null);
+        window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+      if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
+    }
+  }
+
   return (
     <div>
       <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID_KEY}>
-        <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
+        <UserDetailContext.Provider value={{ userDetail, setUserDetail, handleLogout, openDialog, setOpenDialog  }}>
           <MessagesContext.Provider value={{ messages, setMessages }}>
             <NextThemesProvider
               attribute="class"
@@ -56,12 +75,14 @@ const provider = ({ children }) => {
               enableSystem
               disableTransitionOnChange
             >
+              <SidebarProvider defaultOpen={false}>
+              <AppSidebar />
               <div className='w-full rounded-md md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden'>
                 <Spotlight />
                 <Header />
                 {children}
               </div>
-
+              </SidebarProvider>
             </NextThemesProvider>
           </MessagesContext.Provider>
         </UserDetailContext.Provider>
