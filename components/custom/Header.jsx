@@ -17,7 +17,9 @@ const Header = () => {
 
   return (
     <div className='p-4 flex justify-between items-center border-b backdrop-blur-md bg-black/10'>
-      <Image src={logo} alt='Logo' width={50} height={50} />
+      <Image
+      onClick={toggleSidebar}
+      src={logo} alt='Logo' width={50} height={50} />
 
       <div className='flex gap-5 items-center'>
         {!userDetail?.name ? (
@@ -43,7 +45,6 @@ const Header = () => {
             </Button>
             <div className="w-8 h-8 rounded-full overflow-hidden">
               <Image 
-                onClick={toggleSidebar}
                 src={avatarError ? defaultAvatar : userDetail.picture} 
                 alt={userDetail.name}
                 width={32}

@@ -19,7 +19,7 @@ export const CreateWorkspace = mutation({
         }
         
         if (!userId) {
-            // Return null instead of throwing error to allow UI to handle gracefully
+            
             console.warn('User not authenticated - redirecting to sign in');
             return null;
         }
