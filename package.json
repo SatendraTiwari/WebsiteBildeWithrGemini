@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "doctor": "node scripts/doctor.js"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
@@ -20,7 +21,7 @@
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "^1.22.0",
+    "convex": "^1.27.1",
     "dedent": "^1.5.3",
     "lucide-react": "^0.487.0",
     "motion": "^12.6.3",

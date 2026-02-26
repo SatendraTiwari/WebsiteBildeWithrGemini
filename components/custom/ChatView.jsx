@@ -67,25 +67,45 @@ const ChatView = () => {
   const GetAiResponse = async () => {
     setLoading(true);
     const PROMPT = JSON.stringify(messages) + Prompt.CHAT_PROMPT;
+    try {
+      const result = await axios.post('/api/ai-chat', {
+        prompt: PROMPT,
+      });
 
-    const result = await axios.post('/api/ai-chat', {
-      prompt: PROMPT,
-    })
+      const AIresp = result?.data?.result;
+      if (!AIresp) {
+        throw new Error(result?.data?.error || "Empty AI response");
+      }
 
-    const AIresp = result?.data.result
-    const msg = {
-      role: 'ai',
-      content: AIresp
+      const msg = {
+        role: 'ai',
+        content: AIresp
+      };
+      setMessages(prev => [...prev, msg]);
+
+      await UpdateMessages({
+        messages: [...messages, msg],
+        workspaceId: id
+      });
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to generate AI response.";
+      const msg = {
+        role: 'ai',
+        content: `Error: ${errorMessage}`,
+      };
+
+      setMessages(prev => [...prev, msg]);
+      await UpdateMessages({
+        messages: [...messages, msg],
+        workspaceId: id
+      });
+      console.error("AI chat request failed:", errorMessage);
+    } finally {
+      setLoading(false);
     }
-    setMessages(prev => [...prev, msg])
-
-    await UpdateMessages({
-      messages: [...messages, msg],
-      workspaceId: id
-    })
-
-    setLoading(false);
-    console.log("result : ", AIresp);
   }
 
   const onGenerate = (input) => {

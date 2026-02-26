@@ -24,7 +24,7 @@ const Header = () => {
       <div className='flex gap-5 items-center'>
         {!userDetail?.name ? (
           <>
-            <Button variant="ghost" onClick={setOpenDialog(true)}>Sign In</Button>
+            <Button variant="ghost" onClick={() => setOpenDialog(true)}>Sign In</Button>
             <Button 
               variant="ghost"
               className="text-white"

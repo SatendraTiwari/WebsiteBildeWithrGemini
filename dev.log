@@ -1,0 +1,51 @@
+
+> creatfy@0.1.0 dev
+> next dev -p 3000
+
+   ▲ Next.js 15.5.3
+   - Local:        http://localhost:3000
+   - Network:      http://172.25.224.1:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1899ms
+ ○ Compiling / ...
+ ✓ Compiled / in 8.6s (2029 modules)
+ GET / 200 in 9542ms
+ POST /api/gen-ai-code 200 in 9550ms
+ POST /api/ai-chat 200 in 9548ms
+ POST /api/ai-chat 200 in 33ms
+ POST /api/gen-ai-code 200 in 46ms
+ GET / 200 in 109ms
+SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+    at JSON.parse (<anonymous>)
+    at async POST (app\api\ai-chat\route.jsx:5:24)
+  3 |
+  4 | export async function POST(req) {
+> 5 |     const { prompt } = await req.json();
+    |                        ^
+  6 |
+  7 |     if (!prompt?.trim()) {
+  8 |         return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
+ POST /api/ai-chat 500 in 212ms
+ ✓ Compiled in 597ms (877 modules)
+ POST /api/ai-chat 200 in 27ms
+ POST /api/gen-ai-code 200 in 19ms
+ ✓ Compiled in 453ms (877 modules)
+ GET / 200 in 283ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 762ms (1128 modules)
+ GET /favicon.ico 200 in 903ms
+ GET /favicon.ico 200 in 46ms
+ ⚠ The "images.domains" configuration is deprecated. Please use "images.remotePatterns" configuration instead.
+ ○ Compiling /workspace/[id] ...
+ ✓ Compiled /workspace/[id] in 9.6s (2417 modules)
+ GET /workspace/j97ftt6am62p0293z7xsw9zr3n81xzcn 200 in 6581ms
+ GET /workspace/j97bexbmjqbcfkbs51jqcg3emh81xez7 200 in 12960ms
+ GET / 200 in 609ms
+ GET /favicon.ico 200 in 104ms
+ GET /favicon.ico 200 in 44ms
+ GET / 200 in 106ms
+ GET /favicon.ico 200 in 74ms
+ GET /favicon.ico 200 in 32ms
+^C^C

@@ -71,7 +71,12 @@ export default config;
     "date-fns": "^4.1.0",
     "react-chartjs-2": "^5.3.0",
     "chart.js": "^4.4.7",
-    "react-redux": "^8.1.0"
-  },
+    "react-redux": "^8.1.0",
+    "react-router-dom": "^7.9.1",
+    "react-datepicker":"^8.7.0"
+
+
+
+},
 
 }

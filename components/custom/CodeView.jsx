@@ -17,6 +17,76 @@ import { api } from '@/convex/_generated/api';
 import SandpackPreviewClient from './SandpackPreviewClient';
 import Loader from './Loader';
 
+const APP_FILE_CANDIDATES = [
+  '/App.js',
+  '/App.jsx',
+  '/App.tsx',
+  '/App.ts',
+];
+
+const SRC_APP_FILE_CANDIDATES = [
+  '/src/App.js',
+  '/src/App.jsx',
+  '/src/App.tsx',
+  '/src/App.ts',
+];
+
+const ENTRY_FILE_CANDIDATES = [
+  '/index.js',
+  '/index.jsx',
+  '/index.tsx',
+  '/index.ts',
+];
+
+const CSS_FILE_CANDIDATES = [
+  '/src/index.css',
+  '/src/styles.css',
+  '/src/App.css',
+  '/styles.css',
+  '/App.css',
+];
+
+const ensureLeadingSlash = (filePath = '') =>
+  filePath.startsWith('/') ? filePath : `/${filePath}`;
+
+const normalizeFilesForPreview = (inputFiles) => {
+  const files = {};
+
+  Object.entries(inputFiles || {}).forEach(([rawPath, fileValue]) => {
+    const normalizedPath = ensureLeadingSlash(rawPath);
+    files[normalizedPath] =
+      typeof fileValue === 'string' ? { code: fileValue } : fileValue;
+  });
+
+  const rootAppFile = APP_FILE_CANDIDATES.find((path) => files[path]);
+  const hasRootApp = Boolean(rootAppFile);
+  const hasEntryFile = ENTRY_FILE_CANDIDATES.some((path) => files[path]);
+  const srcAppFile = SRC_APP_FILE_CANDIDATES.find((path) => files[path]);
+  const cssFile = CSS_FILE_CANDIDATES.find((path) => files[path]);
+  const rootAppCode =
+    rootAppFile && typeof files[rootAppFile]?.code === 'string'
+      ? files[rootAppFile].code
+      : '';
+  const rootAppLooksTemplate =
+    /hello world/i.test(rootAppCode) && rootAppCode.length < 220;
+
+  if ((!hasRootApp && srcAppFile) || (rootAppLooksTemplate && srcAppFile)) {
+    files['/App.js'] = {
+      code: `export { default } from ".${srcAppFile.replace(/\.[^/.]+$/, '')}";\n`,
+    };
+  }
+
+  if (!hasEntryFile && srcAppFile) {
+    const appImportPath = `.${srcAppFile.replace(/\.[^/.]+$/, '')}`;
+    const cssImportLine = cssFile ? `import ".${cssFile}";\n` : "";
+    files['/index.js'] = {
+      code: `import React, { StrictMode } from "react";\nimport { createRoot } from "react-dom/client";\n${cssImportLine}import App from "${appImportPath}";\n\nconst root = createRoot(document.getElementById("root"));\nroot.render(\n  <StrictMode>\n    <App />\n  </StrictMode>\n);\n`,
+    };
+  }
+
+  return files;
+};
+
 const CodeView = () => {
   const {id} = useParams();
   const [activeTab,setActiveTab] = useState('code');
@@ -39,7 +109,8 @@ const CodeView = () => {
       workspaceId : id
     });
 
-    const mergeFiles = {...Lookup.DEFAULT_FILE,...result?.fileData};
+    const normalizedFiles = normalizeFilesForPreview(result?.fileData);
+    const mergeFiles = {...Lookup.DEFAULT_FILE,...normalizedFiles};
     setFiles(mergeFiles);
     setLoading(false)
   }
@@ -58,20 +129,32 @@ const CodeView = () => {
   const GenerateCode = async () => {
     setLoading(true);
     const PROMPT = messages[messages?.length - 1]?.content +" " + Prompt.CODE_GEN_PROMPT;
-    const result = await axios.post(`/api/gen-ai-code`, {
-      prompt: PROMPT,
-    })
-    const aiResp = result.data;
-    const mergeFiles = {...Lookup.DEFAULT_FILE,...aiResp?.files};
+    try {
+      const result = await axios.post(`/api/gen-ai-code`, {
+        prompt: PROMPT,
+      });
+      const aiResp = result.data;
+      if (!aiResp?.files) {
+        throw new Error(aiResp?.error || "No files returned from AI");
+      }
 
-    setFiles(mergeFiles);
-    await UpdateFiles({
-      workspaceId: id,
-      fileData : aiResp.files
-    }); 
+      const normalizedFiles = normalizeFilesForPreview(aiResp?.files);
+      const mergeFiles = {...Lookup.DEFAULT_FILE,...normalizedFiles};
 
-
-    setLoading(false);
+      setFiles(mergeFiles);
+      await UpdateFiles({
+        workspaceId: id,
+        fileData : normalizedFiles
+      });
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to generate code.";
+      console.error("Code generation failed:", errorMessage);
+    } finally {
+      setLoading(false);
+    }
   }
 
 

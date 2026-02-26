@@ -26,6 +26,8 @@ const Hero = () => {
     setLoading(true);
     if (!userDetail?.name) {
       setOpenDialog(true);
+      setLoading(false);
+      return;
     }
     
     const msg = {
@@ -50,6 +52,7 @@ const Hero = () => {
     } catch (error) {
       console.error('Workspace creation failed:', error);
       // Handle error (show toast/alert to user)
+      setLoading(false);
     }
   }
 
